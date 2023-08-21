@@ -18,7 +18,11 @@ class _WebViewPageState extends State<WebViewPage> {
   @override
   void initState() {
     webViewController.setJavaScriptMode(JavaScriptMode.unrestricted);
-    webViewController.loadRequest(Uri.parse(widget.url));
+
+    webViewController.loadRequest(
+      Uri.parse(widget.url),
+      headers: {"Cookie": "mycookie=true"},
+    );
     super.initState();
   }
 
