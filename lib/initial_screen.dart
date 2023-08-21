@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 import 'package:test1377/core/local_storage/storage_hive.dart';
+import 'package:test1377/core/network/connectivity_info.dart';
+import 'package:test1377/core/services/firebase_remote_config.dart';
 import 'package:test1377/features/home/presentation/pages/home_page.dart';
 
 class InitialScreen extends StatefulWidget {
@@ -27,9 +29,11 @@ class _InitialScreenState extends State<InitialScreen> {
       await storageHive.init();
       Get.put(storageHive);
 
-      // FirebaseRemConfService firebaseRemConfService = FirebaseRemConfService();
-      // await firebaseRemConfService.init();
-      // Get.put(firebaseRemConfService);
+      Get.put(ConnectivityInfo());
+
+      FirebaseRemConfService firebaseRemConfService = FirebaseRemConfService();
+      await firebaseRemConfService.init();
+      Get.put(firebaseRemConfService);
     } catch (e) {
       log(e.toString());
     } finally {
