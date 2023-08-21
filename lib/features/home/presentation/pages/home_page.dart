@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:test1377/features/home/presentation/controller/home_controller.dart';
+import 'package:test1377/features/home/presentation/pages/webview_page.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  HomeController homeController = HomeController();
-
-  @override
-  void initState() {
-    fetch();
-    super.initState();
-  }
-
-  fetch() async {
-    var data = await homeController.fetch();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    HomeController controller = HomeController();
     return Scaffold(
-      appBar: AppBar(),
-      body: const Text('data'),
+      body: Obx(() {
+        switch (controller.homeState.value) {
+          case HomePageState.loading:
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          case HomePageState.webview:
+            return WebViewPage(url: controller.webUrl);
+          default:
+            return Container();
+        }
+      }),
     );
   }
 }
