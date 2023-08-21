@@ -22,10 +22,21 @@ class _WebViewPageState extends State<WebViewPage> {
     super.initState();
   }
 
+  Future<bool> willPop() async {
+    if (await webViewController.canGoBack()) {
+      webViewController.goBack();
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WebViewWidget(
-      controller: webViewController,
+    return WillPopScope(
+      onWillPop: willPop,
+      child: WebViewWidget(
+        controller: webViewController,
+      ),
     );
   }
 }

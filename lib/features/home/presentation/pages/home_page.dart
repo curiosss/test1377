@@ -9,19 +9,21 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeController controller = HomeController();
-    return Scaffold(
-      body: Obx(() {
-        switch (controller.homeState.value) {
-          case HomePageState.loading:
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          case HomePageState.webview:
-            return WebViewPage(url: controller.webUrl);
-          default:
-            return Container();
-        }
-      }),
+    return SafeArea(
+      child: Scaffold(
+        body: Obx(() {
+          switch (controller.homeState.value) {
+            case HomePageState.loading:
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            case HomePageState.webview:
+              return WebViewPage(url: controller.webUrl);
+            default:
+              return Container();
+          }
+        }),
+      ),
     );
   }
 }

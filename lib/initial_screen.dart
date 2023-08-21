@@ -26,6 +26,10 @@ class _InitialScreenState extends State<InitialScreen> {
       StorageHive storageHive = StorageHive();
       await storageHive.init();
       Get.put(storageHive);
+
+      // FirebaseRemConfService firebaseRemConfService = FirebaseRemConfService();
+      // await firebaseRemConfService.init();
+      // Get.put(firebaseRemConfService);
     } catch (e) {
       log(e.toString());
     } finally {
