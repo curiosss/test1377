@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:test1377/features/tetris/presentation/constants/colors.dart';
 import 'package:test1377/features/tetris/presentation/constants/shapes.dart';
 import 'package:test1377/features/tetris/presentation/controller/score_controller.dart';
 import 'package:test1377/features/tetris/presentation/models/shape_model.dart';
@@ -120,7 +121,8 @@ class TetrisWidgetState extends State<TetrisWidget> {
   Random random = Random();
   start() {
     ShapeModel shape = shapes[random.nextInt(shapes.length)];
-    shape.applyColor(random.nextInt(3) + 1);
+    // ShapeModel shape = shapes[5];
+    shape.applyColor(random.nextInt(tetrisColors.length) + 1);
     newShape(
       random.nextInt(10),
       shape,
@@ -137,7 +139,8 @@ class TetrisWidgetState extends State<TetrisWidget> {
     shape.posY = shape.height - 1;
     for (int i = 0; i < shape.height; i++) {
       for (int j = 0; j < shape.width; j++) {
-        array[shape.height - 1 - i][x + j] = shape.coordnts[i][j];
+        array[shape.posY - i][x + j] =
+            shape.coordnts[currentShape.height - 1 - i][j];
       }
     }
     setState(() {});
@@ -147,7 +150,7 @@ class TetrisWidgetState extends State<TetrisWidget> {
     if (canMoveShape()) {
       for (int i = 0; i < currentShape.height; i++) {
         for (int j = 0; j < currentShape.width; j++) {
-          if (array[currentShape.posY - i][currentShape.posX + j] > 0) {
+          if (currentShape.coordnts[currentShape.height - 1 - i][j] > 0) {
             array[currentShape.posY + 1 - i][currentShape.posX + j] =
                 array[currentShape.posY - i][currentShape.posX + j];
             array[currentShape.posY - i][currentShape.posX + j] = 0;
@@ -227,19 +230,24 @@ class TetrisWidgetState extends State<TetrisWidget> {
   }
 
   bool canMoveShape() {
+    //checking for bottom borders
+    if (currentShape.posY + 1 > 19) {
+      return false;
+    }
+
     for (int j = 0; j < currentShape.width; j++) {
-      //checking for bottom borders
-      if (currentShape.posY + 1 > 19) {
-        return false;
-      }
-      //scanning bottom of shape
-      //if shape part is void continue
-      if (array[currentShape.posY][currentShape.posX + j] == 0) {
-        continue;
-      }
-      // if shape part is filled check bottom environment
-      else if (array[currentShape.posY + 1][currentShape.posX + j] > 0) {
-        return false;
+      int i = 0;
+      while (true) {
+        if (currentShape.coordnts[currentShape.height - 1 - i][j] > 0) {
+          if (array[currentShape.posY - i + 1][currentShape.posX + j] > 0) {
+            return false;
+          }
+          break;
+        }
+        i++;
+        if (i > 3) {
+          break;
+        }
       }
     }
     return true;
@@ -314,17 +322,18 @@ class TetrisWidgetState extends State<TetrisWidget> {
     if (canRotate()) {
       for (int i = 0; i < currentShape.height; i++) {
         for (int j = 0; j < currentShape.width; j++) {
-          if (currentShape.coordnts[i][j] > 0) {
+          if (currentShape.coordnts[currentShape.height - 1 - i][j] > 0) {
             array[currentShape.posY - i][currentShape.posX + j] = 0;
           }
         }
       }
       currentShape.rotate();
+      // return;
       for (int i = 0; i < currentShape.height; i++) {
         for (int j = 0; j < currentShape.width; j++) {
-          if (currentShape.coordnts[i][j] > 0) {
+          if (currentShape.coordnts[currentShape.height - 1 - i][j] > 0) {
             array[currentShape.posY - i][currentShape.posX + j] =
-                currentShape.coordnts[i][j];
+                currentShape.coordnts[currentShape.height - 1 - i][j];
           }
         }
       }
@@ -346,11 +355,7 @@ class TetrisWidgetState extends State<TetrisWidget> {
               child: e > 0
                   ? Container(
                       margin: const EdgeInsets.all(1),
-                      color: e == 3
-                          ? Colors.yellow
-                          : e == 2
-                              ? Colors.red
-                              : Colors.green,
+                      color: tetrisColors[e - 1],
                     )
                   : Container(),
             );
