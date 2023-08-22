@@ -33,6 +33,9 @@ class HomeController {
     // var data = await getUrlUseCase.getData();
     // return data;
 
+    homeState.value = HomePageState.stub;
+    return;
+
     homeState.value = HomePageState.loading;
     var data = await getUrlUseCase.getData();
     print(data);

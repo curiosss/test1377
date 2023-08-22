@@ -4,6 +4,7 @@ import 'package:test1377/features/home/presentation/controller/home_controller.d
 import 'package:test1377/features/home/presentation/pages/error_page.dart';
 import 'package:test1377/features/home/presentation/pages/webview_page.dart';
 import 'package:test1377/features/stub/presentation/pages/stub_page.dart';
+import 'package:test1377/features/tetris/presentation/pages/tetris_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,29 +18,29 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     controller.getData();
-    return SafeArea(
-      child: Scaffold(
-        // body: FutureBuilder(
-        //   future: controller.getData(),
-        //   builder: (context, snapshot) {
-        //     if (snapshot.connectionState == ConnectionState.waiting) {
-        //       return const Center(
-        //         child: CircularProgressIndicator.adaptive(),
-        //       );
-        //     } else if (snapshot.hasData) {
-        //       if (snapshot.data!.$1 != null) {
-        //         return ErrorPage(
-        //           kError: controller.kError!,
-        //           onRefresh: controller.getData,
-        //         );
-        //       } else if (snapshot.data!.$3) {
-        //         return WebViewPage(url: controller.webUrl);
-        //       }
-        //     }
-        //     return Container();
-        //   },
-        // ),
-        body: Obx(() {
+    return Scaffold(
+      // body: FutureBuilder(
+      //   future: controller.getData(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.connectionState == ConnectionState.waiting) {
+      //       return const Center(
+      //         child: CircularProgressIndicator.adaptive(),
+      //       );
+      //     } else if (snapshot.hasData) {
+      //       if (snapshot.data!.$1 != null) {
+      //         return ErrorPage(
+      //           kError: controller.kError!,
+      //           onRefresh: controller.getData,
+      //         );
+      //       } else if (snapshot.data!.$3) {
+      //         return WebViewPage(url: controller.webUrl);
+      //       }
+      //     }
+      //     return Container();
+      //   },
+      // ),
+      body: SafeArea(
+        child: Obx(() {
           switch (controller.homeState.value) {
             case HomePageState.loading:
               return const Center(
@@ -54,7 +55,8 @@ class _HomePageState extends State<HomePage> {
               );
 
             case HomePageState.stub:
-              return const StubPage();
+              // return const StubPage();
+              return TetrisPage();
             default:
               return Container();
           }
