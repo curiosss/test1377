@@ -26,7 +26,10 @@ class _TetrisPageState extends State<TetrisPage> {
               flex: 3,
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 10),
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                    // top: 5,
+                  ),
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(
@@ -61,6 +64,22 @@ class _TetrisPageState extends State<TetrisPage> {
                       const SizedBox(height: 10),
                       const Text('TOTAL \nSCORE'),
                       Text(scoreController.totalScore.value.toString()),
+                      const Spacer(),
+                      scoreController.isPlaying.value
+                          ? ElevatedButton(
+                              onPressed: () {
+                                key.currentState?.pause();
+                                scoreController.isPlaying.value = false;
+                              },
+                              child: const Icon(Icons.pause),
+                            )
+                          : ElevatedButton(
+                              onPressed: () {
+                                key.currentState?.resume();
+                                scoreController.isPlaying.value = true;
+                              },
+                              child: const Icon(Icons.play_arrow),
+                            )
                     ],
                   );
                 },

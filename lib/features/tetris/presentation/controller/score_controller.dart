@@ -4,6 +4,7 @@ import 'package:test1377/core/local_storage/storage_hive.dart';
 class ScoreController {
   RxInt highScore = 0.obs;
   RxInt totalScore = 0.obs;
+  RxBool isPlaying = true.obs;
 
   ScoreController() {
     init();

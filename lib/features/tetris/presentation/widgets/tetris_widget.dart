@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:test1377/features/tetris/presentation/constants/shapes.dart';
 import 'package:test1377/features/tetris/presentation/controller/score_controller.dart';
 import 'package:test1377/features/tetris/presentation/models/shape_model.dart';
+import 'package:test1377/features/tetris/presentation/widgets/game_over_dialog.dart';
 
 class TetrisWidget extends StatefulWidget {
   final BoxConstraints boxConstraints;
@@ -23,12 +24,25 @@ class TetrisWidgetState extends State<TetrisWidget> {
   double size = 10;
   List<List<int>> array = [];
   int totalScore = 0;
+
   @override
   initState() {
     init();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     size = widget.boxConstraints.maxWidth / 10;
+    start();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    super.dispose();
   }
 
   ShapeModel currentShape = shapes.first;
@@ -89,17 +103,6 @@ class TetrisWidgetState extends State<TetrisWidget> {
     resume();
   }
 
-  rotate() {
-    print('rotate');
-    start();
-    // for (int i = 0; i < 20; i++) {
-    //   for (int j = 0; j < 10; j++) {
-    //     array[i][j] = 0;
-    //   }
-    // }
-    // setState(() {});
-  }
-
   pause() {
     timer?.cancel();
   }
@@ -107,7 +110,7 @@ class TetrisWidgetState extends State<TetrisWidget> {
   resume() {
     timer?.cancel();
     timer = Timer.periodic(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: 700),
       (timer) {
         moveShape();
       },
@@ -116,10 +119,11 @@ class TetrisWidgetState extends State<TetrisWidget> {
 
   Random random = Random();
   start() {
+    ShapeModel shape = shapes[random.nextInt(shapes.length)];
+    shape.applyColor(random.nextInt(3) + 1);
     newShape(
       random.nextInt(10),
-      shapes[random.nextInt(4)],
-      // shapes.first,
+      shape,
     );
     resume();
   }
@@ -133,14 +137,13 @@ class TetrisWidgetState extends State<TetrisWidget> {
     shape.posY = shape.height - 1;
     for (int i = 0; i < shape.height; i++) {
       for (int j = 0; j < shape.width; j++) {
-        array[i][x + j] = shape.coordnts[i][j];
+        array[shape.height - 1 - i][x + j] = shape.coordnts[i][j];
       }
     }
     setState(() {});
   }
 
   moveShape() {
-    print('moving shape ${currentShape.posY}');
     if (canMoveShape()) {
       for (int i = 0; i < currentShape.height; i++) {
         for (int j = 0; j < currentShape.width; j++) {
@@ -161,13 +164,43 @@ class TetrisWidgetState extends State<TetrisWidget> {
   clearField() async {
     timer?.cancel();
 
+    if (currentShape.posY - currentShape.height < 0) {
+      gameOver();
+      return;
+    }
+
     for (int i = array.length - 1; i > -1; i--) {
-      print('clearing col:$i');
+      // print('clearing col:$i');
       if (await deleteRow(i)) {
         break;
       }
     }
     //
+    start();
+  }
+
+  gameOver() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return GameOverDialog(
+          onTap: newGame,
+        );
+      },
+    );
+  }
+
+  newGame() {
+    Navigator.pop(context);
+    for (int i = 0; i < array.length; i++) {
+      for (int j = 0; j < 10; j++) {
+        array[i][j] = 0;
+      }
+    }
+    totalScore = -10;
+    updateScore();
+    setState(() {});
     start();
   }
 
@@ -185,7 +218,7 @@ class TetrisWidgetState extends State<TetrisWidget> {
       array.insert(0, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
       updateScore();
       setState(() {});
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
       return deleteRow(index);
     } else if (cnr == 0) {
       return true;
@@ -244,9 +277,64 @@ class TetrisWidgetState extends State<TetrisWidget> {
     return true;
   }
 
+  bool canRotate() {
+    int dx, dy, movingX, movingY, centerX1;
+    centerX1 = currentShape.posX + currentShape.width - 1;
+
+    for (int i = 0; i < currentShape.height; i++) {
+      for (int j = 0; j < currentShape.width; j++) {
+        //check for shapes bottom right cell is it filled or emtpy
+        if (array[currentShape.posY - i][currentShape.posX + j] > 0) {
+          dx = currentShape.posX + j - centerX1;
+          dy = i;
+          movingY = currentShape.posY + dx;
+          movingX = currentShape.posX + dy;
+          if (movingY <= currentShape.posY &&
+              movingY >= currentShape.posY - currentShape.height + 1 &&
+              movingX >= currentShape.posX &&
+              movingX <= currentShape.posX + currentShape.width - 1) {
+            //inside shape
+          } else {
+            //outside shape
+            if (array[movingY][movingX] > 0) {
+              return false;
+            }
+          }
+        } else {
+          continue;
+        }
+      }
+    }
+    return true;
+  }
+
+  rotate() {
+    pause();
+
+    if (canRotate()) {
+      for (int i = 0; i < currentShape.height; i++) {
+        for (int j = 0; j < currentShape.width; j++) {
+          if (currentShape.coordnts[i][j] > 0) {
+            array[currentShape.posY - i][currentShape.posX + j] = 0;
+          }
+        }
+      }
+      currentShape.rotate();
+      for (int i = 0; i < currentShape.height; i++) {
+        for (int j = 0; j < currentShape.width; j++) {
+          if (currentShape.coordnts[i][j] > 0) {
+            array[currentShape.posY - i][currentShape.posX + j] =
+                currentShape.coordnts[i][j];
+          }
+        }
+      }
+      setState(() {});
+    }
+    resume();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // print(widget.boxConstraints);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: array.map((col) {
@@ -258,7 +346,11 @@ class TetrisWidgetState extends State<TetrisWidget> {
               child: e > 0
                   ? Container(
                       margin: const EdgeInsets.all(1),
-                      color: Colors.green,
+                      color: e == 3
+                          ? Colors.yellow
+                          : e == 2
+                              ? Colors.red
+                              : Colors.green,
                     )
                   : Container(),
             );

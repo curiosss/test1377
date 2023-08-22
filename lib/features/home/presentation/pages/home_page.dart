@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:test1377/features/home/presentation/controller/home_controller.dart';
 import 'package:test1377/features/home/presentation/pages/error_page.dart';
 import 'package:test1377/features/home/presentation/pages/webview_page.dart';
-import 'package:test1377/features/stub/presentation/pages/stub_page.dart';
 import 'package:test1377/features/tetris/presentation/pages/tetris_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -56,7 +55,7 @@ class _HomePageState extends State<HomePage> {
 
             case HomePageState.stub:
               // return const StubPage();
-              return TetrisPage();
+              return const TetrisPage();
             default:
               return Container();
           }
