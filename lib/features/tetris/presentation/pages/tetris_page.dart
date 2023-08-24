@@ -28,7 +28,7 @@ class _TetrisPageState extends State<TetrisPage> {
                 child: Padding(
                   padding: const EdgeInsets.only(
                     left: 10,
-                    // top: 5,
+                    top: 10,
                   ),
                   child: Container(
                     decoration: BoxDecoration(

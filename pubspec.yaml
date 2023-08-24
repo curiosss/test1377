@@ -39,13 +39,16 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  flutter_launcher_icons: ^0.13.1
+  # flutter_launcher_icons: ^0.13.1
 
 
 flutter_icons:
   ios: true
   android: true
   image_path: "assets/launcher/app_icon.png"
+
+flutter_app_name:
+  name: "Scommesse"
 
 
 flutter:
