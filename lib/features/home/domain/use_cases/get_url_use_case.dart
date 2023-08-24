@@ -13,12 +13,11 @@ class GetUrlUseCase {
     if (data.$1 != null) {
       return (data.$1, '', false);
     }
-    if (data.$2.isNotEmpty) {
-      return (null, data.$2, false);
-    } else if (await checkIsEmu()) {
+    if (data.$2.isEmpty || await checkIsEmu()) {
       return (null, '', true);
     }
-    return (null, '', false);
+
+    return (null, data.$2, false);
   }
 
   checkIsEmu() async {

@@ -4,5 +4,6 @@ class KError {
 }
 
 class NoInternet extends KError {
-  NoInternet({String? message}) : super(message ?? 'No internet');
+  NoInternet({String? message})
+      : super(message ?? 'The application requires access to the network');
 }

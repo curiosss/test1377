@@ -37,7 +37,6 @@ class HomeController {
 
     homeState.value = HomePageState.loading;
     var data = await getUrlUseCase.getData();
-    // print(data);
     if (data.$1 != null) {
       kError = data.$1;
       homeState.value = HomePageState.error;

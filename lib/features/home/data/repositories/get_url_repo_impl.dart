@@ -17,12 +17,7 @@ class GetUrlRepoImpl implements GetUrlRepo {
     String? remoteUrl = storageHive.box?.get('remoteUrl');
     if (remoteUrl != null && remoteUrl.isNotEmpty) {
       if (!await connectivityInfo.isConnected()) {
-        return (
-          NoInternet(
-            message: 'The application requires access to the network',
-          ),
-          ''
-        );
+        return (NoInternet(), '');
       }
       return (null, remoteUrl);
     }
@@ -31,21 +26,20 @@ class GetUrlRepoImpl implements GetUrlRepo {
 
   Future<(KError? err, String url)> getUrlFromFirebaseRemConf() async {
     try {
-      // String url = FirebaseRemoteConfig.instance.getString('app_remote_url');
+      if (!await connectivityInfo.isConnected()) {
+        return (NoInternet(), '');
+      }
+
       String url =
           firebaseRemConfService.remoteConfig.getString('app_remote_url');
+
       if (url.isNotEmpty) {
         storageHive.box?.put('remoteUrl', url);
       }
       return (null, url);
     } catch (e) {
       log(e.toString());
-      return (
-        NoInternet(
-          message: 'The application requires access to the network',
-        ),
-        ''
-      );
+      return (NoInternet(), '');
     }
   }
 }
