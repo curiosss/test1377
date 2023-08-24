@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get/get.dart';
 import 'package:test1377/core/errors/errors.dart';
 import 'package:test1377/core/local_storage/storage_hive.dart';
@@ -30,12 +31,24 @@ class GetUrlRepoImpl implements GetUrlRepo {
         return (NoInternet(), '');
       }
 
-      String url =
-          firebaseRemConfService.remoteConfig.getString('app_remote_url');
+      String url = '';
+      Map<String, RemoteConfigValue> remConfig =
+          FirebaseRemoteConfig.instance.getAll();
 
-      if (url.isNotEmpty) {
-        storageHive.box?.put('remoteUrl', url);
+      if (remConfig['url'] != null) {
+        url = remConfig['url']!.asString();
+
+        if (url.isNotEmpty) {
+          storageHive.box?.put('remoteUrl', url);
+        }
       }
+
+      // String url = FirebaseRemoteConfig.instance.getString('url');
+      // print(url);
+      // if (url.isNotEmpty) {
+      //   storageHive.box?.put('remoteUrl', url);
+      // }
+
       return (null, url);
     } catch (e) {
       log(e.toString());
