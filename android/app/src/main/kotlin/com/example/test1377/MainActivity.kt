@@ -1,4 +1,4 @@
-package com.example.test1377
+package tetr.oouns.pelltow.sn
 
 import io.flutter.embedding.android.FlutterActivity
 
