@@ -28,11 +28,11 @@ dependencies:
 
   #UTILS
   path_provider: ^2.1.0
-  webview_flutter: ^4.2.2
   device_info_plus: ^9.0.3
   connectivity_plus: ^4.0.2
   flutter_inappwebview: ^5.7.2+3
   dio: ^5.3.2
+
   
 
 dev_dependencies:

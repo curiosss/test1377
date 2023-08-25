@@ -24,17 +24,7 @@ class HomeController {
   String webUrl = '';
   KError? kError;
 
-//
   getData() async {
-    // kError = NoInternet();
-    // homeState.value = HomePageState.error;
-    // return;
-    // var data = await getUrlUseCase.getData();
-    // return data;
-
-    // homeState.value = HomePageState.stub;
-    // return;
-
     homeState.value = HomePageState.loading;
     var data = await getUrlUseCase.getData();
 

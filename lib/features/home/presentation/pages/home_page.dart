@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test1377/features/home/presentation/controller/home_controller.dart';
 import 'package:test1377/features/home/presentation/pages/error_page.dart';
-import 'package:test1377/features/home/presentation/pages/webview_page.dart';
+import 'package:test1377/features/home/presentation/pages/main_view.dart';
 import 'package:test1377/features/tetris/presentation/pages/tetris_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
                 child: CircularProgressIndicator.adaptive(),
               );
             case HomePageState.webview:
-              return WebViewPage(url: controller.webUrl);
+              return MainView(r: controller.webUrl);
             case HomePageState.error:
               return ErrorPage(
                 kError: controller.kError!,
