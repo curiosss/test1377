@@ -14,7 +14,6 @@ void main() async {
       statusBarBrightness: Brightness.light,
     ),
   );
-
   runApp(const App());
 }
 

@@ -15,6 +15,15 @@ class _TetrisPageState extends State<TetrisPage> {
   GlobalKey<TetrisWidgetState> key = GlobalKey();
   ScoreController scoreController = ScoreController();
 
+  pause() {
+    key.currentState?.pause();
+    scoreController.isPlaying.value = false;
+  }
+
+  resume() {
+    key.currentState?.resume();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -67,17 +76,11 @@ class _TetrisPageState extends State<TetrisPage> {
                       const Spacer(),
                       scoreController.isPlaying.value
                           ? ElevatedButton(
-                              onPressed: () {
-                                key.currentState?.pause();
-                                scoreController.isPlaying.value = false;
-                              },
+                              onPressed: pause,
                               child: const Icon(Icons.pause),
                             )
                           : ElevatedButton(
-                              onPressed: () {
-                                key.currentState?.resume();
-                                scoreController.isPlaying.value = true;
-                              },
+                              onPressed: resume,
                               child: const Icon(Icons.play_arrow),
                             )
                     ],

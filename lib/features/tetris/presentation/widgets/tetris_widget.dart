@@ -116,6 +116,9 @@ class TetrisWidgetState extends State<TetrisWidget> {
         moveShape();
       },
     );
+    if (!widget.scoreController.isPlaying.value) {
+      widget.scoreController.isPlaying.value = true;
+    }
   }
 
   Random random = Random();
